@@ -1,107 +1,44 @@
-init:
-  mov @R1, #0
-loop:
+; 在RAM中，位址為0x10~0x1f設定七段顯示器對應的值
+mov 0x10, #0xC0
+mov 0x11, #0xF9
+mov 0x12, #0xA4
+mov 0x13, #0xB0
+mov 0x14, #0x99
+mov 0x15, #0x92
+mov 0x16, #0x82
+mov 0x17, #0xF8
+mov 0x18, #0x80
+mov 0x19, #0x90
+mov 0x1a, #0x88
+mov 0x1b, #0x83
+mov 0x1c, #0xC6
+mov 0x1d, #0xA1
+mov 0x1e, #0x86
+mov 0x1f, #0x8E
 
-  ; 0~F
-  cjne @R1, #0, n0
-  jmp set0
-  n0:
-  cjne @R1, #1, n1
-  jmp set1
-  n1:
-  cjne @R1, #2, n2
-  jmp set2
-  n2:
-  cjne @R1, #3, n3
-  jmp set3
-  n3:
-  cjne @R1, #4, n4
-  jmp set4
-  n4:
-  cjne @R1, #5, n5
-  jmp set5
-  n5:
-  cjne @R1, #6, n6
-  jmp set6
-  n6:
-  cjne @R1, #7, n7
-  jmp set7
-  n7:
-  cjne @R1, #8, n8
-  jmp set8
-  n8:
-  cjne @R1, #9, n9
-  jmp set9
-  n9:
-  cjne @R1, #10, n10
-  jmp set10
-  n10:
-  cjne @R1, #11, n11
-  jmp set11
-  n11:
-  cjne @R1, #12, n12
-  jmp set12
-  n12:
-  cjne @R1, #13, n13
-  jmp set13
-  n13:
-  cjne @R1, #14, n14
-  jmp set14
-  n14:
-  cjne @R1, #15, n15
-  jmp set15
-  n15:
+; A存的是位址
+; 設定A的初始值為第一個位址0x10
+mov A, #0x10
+main:
+  ; 把ACC對應記憶體位置所存的值放入七段顯示器
+  mov R1, A
+  mov P1, @R1
 
-  nxt:
-    inc @R1
-    cjne @R1, #0x10, loop
-    jmp init
+  ; 判斷使用者是否按下Switch0，若沒按下則正向顯示
+  jb P2.0, up
 
-set0:
-  mov P1, #0xC0
-  jmp nxt
-set1:
-  mov P1, #0xF9
-  jmp nxt
-set2:
-  mov P1, #0xA4
-  jmp nxt
-set3:
-  mov P1, #0xB0
-  jmp nxt
-set4:
-  mov P1, #0x99
-  jmp nxt
-set5:
-  mov P1, #0x92
-  jmp nxt
-set6:
-  mov P1, #0x82
-  jmp nxt
-set7:
-  mov P1, #0xF8
-  jmp nxt
-set8:
-  mov P1, #0x80
-  jmp nxt
-set9:
-  mov P1, #0x90
-  jmp nxt
-set10:
-  mov P1, #0x88
-  jmp nxt
-set11:
-  mov P1, #0x83
-  jmp nxt
-set12:
-  mov P1, #0xC6
-  jmp nxt
-set13:
-  mov P1, #0xA1
-  jmp nxt
-set14:
-  mov P1, #0x86
-  jmp nxt
-set15:
-  mov P1, #0x8E
-  jmp nxt
+  ; 反向顯示
+  down:
+    dec A
+    ; 邊緣判斷，若還沒減到0x10以下就回到main，否則重置ACC為0x1F
+    cjne A, #0x0F, main
+    mov A, #0x1F
+    jmp main
+
+  ; 正向顯示
+  up:
+    inc A
+    ; 邊緣判斷，若還沒加到0x1F以上就回到main，否則重置ACC為0x10
+    cjne A, #0x20, main
+    mov A, #0x10
+    jmp main
