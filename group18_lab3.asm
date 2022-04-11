@@ -1,3 +1,4 @@
+;本程式為進階版
   ORG 0H  ;The execution address of the system boot is 0
   JMP INIT ;Jump to the initialization routine
 
