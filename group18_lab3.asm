@@ -26,8 +26,11 @@ MAIN:
   MOV B, #02H 
   DIV AB ; i divides by 2
   MOV I, A
-  MOV CUR, #41H ; CUR is the current starting of the array
-  MOV TAIL, #47H ; TAIL is the current end of the array
+  MOV CUR, #ARRAY ; CUR is the current starting of the array
+  MOV A, #ARRAY
+  ADD A, LENGTH
+  DEC A
+  MOV TAIL, A ; TAIL is the current end of the array
 
   ; while(i > 0)
   LOOP:
@@ -37,3 +40,4 @@ MAIN:
     INC CUR ; Increment the current of the array
     DEC TAIL ; Decrement the end of the array
     DJNZ I, LOOP
+  JMP $
