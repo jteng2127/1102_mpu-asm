@@ -1,4 +1,4 @@
-ORG 0H ;系統開機的執行位址為0
+  ORG 0H
   JMP MAIN
   ORG 30H
 MAIN:
