@@ -6,7 +6,7 @@ MAIN:
   MOV A, #0
   MOVC A, @A+DPTR
   MOV R0, A
-  DEC R0 ; loop end
+  DEC R0
 INIT:
   MOV A, R0
   MOV R1, A
