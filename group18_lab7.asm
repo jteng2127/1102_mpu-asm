@@ -1,12 +1,8 @@
-        ORG 0H      ;系統開機的執行位址為0
-        JMP INIT
-        ORG 30H
-init:
-  MOV DPTR, #table ;DPTR points to TABLE
-  MOV R0, #0
-  SETB P0.1
-  SETB P0.2
-  SETB P0.3
+  ORG 0H      ;系統開機的執行位址為0
+  JMP INIT
+  ORG 30H
+init: ; 初始化資料
+  MOV DPTR, #table ; DPTR points to TABLE
 scan:
   MOV R0, #0
 
@@ -34,10 +30,11 @@ scan:
   CALL colScan
   JB F0, show
 
+  ; 沒有按下的話就把七段顯示器清除
   CALL clear
   JMP scan
 
-show:
+show: ; 顯示七段顯示器的值與清除P0、F0
   SETB P0.0
   SETB P0.1
   SETB P0.2
@@ -49,7 +46,7 @@ show:
   
   JMP scan
 
-clear:
+clear: ; 清除七段顯示器
   MOV P1, #0FFH
   RET
 
@@ -71,8 +68,4 @@ table:
   DB 98H, 80H, 0F8H
   DB 82H, 92H, 99H
   DB 0B0H, 0A4H, 0F9H
-
-  ; DB 0C0H, 0F9H, 0A4H, 0B0H
-  ; DB 99H, 92H, 82H, 0F8H
-  ; DB 80H, 98H
   END
