@@ -1,0 +1,93 @@
+; 5. 在你的程式之中, 是否需要清除溢位旗標? NO
+  ORG  0H           ;系統開機的執行位址為0
+  JMP  MAIN
+  ORG  000BH
+  LJMP T0ISR
+
+  ORG  30H
+MAIN:
+  MOV R1, #0
+  MOV R7, #10 ; 10 interrupts=100ms
+  MOV R6, #10
+  MOV R2, #0
+  ; Timer Mode
+  MOV TMOD,  #02H ; Timer 0, mode 2
+  MOV TH0, #246 ; 256 - 100
+  MOV TL0, #246 ; 256 - 100
+  SETB TR0
+  SETB TF0
+  MOV IE, #82H ; enable timer 0
+  SJMP $
+
+T0ISR:  ;Timer0 ISR
+  CJNE R2, #0, ISREND
+  CALL SCAN
+  MOV R2, AR7
+SHOW:
+  CPL P1.1
+ISREND:
+  DEC R2
+  RETI
+
+SCAN:
+  ; scan row2
+  MOV R3, AR7
+  CLR P0.2
+  CALL COLSCAM
+  JB F0, SCANEND
+
+SCANEND:
+  RET
+
+; column-scan subroutine
+COLSCAM:
+  CALL TEMPGET
+  JNB P0.4, DEC7
+  JNB P0.5, MOV70
+  JNB P0.6, INC7
+  CALL TEMPGET
+  RET
+
+INC7:
+  INC R7
+  CALL CHECKR72
+  JMP GOTKEY
+
+MOV70:
+  MOV R7, #0
+  JMP GOTKEY
+
+DEC7:
+  DEC R7
+  CALL CHECKR71
+  JMP GOTKEY
+
+GOTKEY:
+  SETB F0
+  RET
+
+TEMPSTORE:
+  MOV R6, AR7
+  RET
+
+TEMPGET:
+  MOV R7, AR6
+  RET
+
+CHECKR71:
+  MOV A, R7
+  SUBB A, #5
+  JNC CHECKEND
+  MOV R7, #5
+  RET
+
+CHECKR72:
+  MOV A, R7
+  SUBB A, #15
+  JC CHECKEND
+  MOV R7, #15
+  RET
+
+CHECKEND:
+  CALL TEMPSTORE
+  RET
