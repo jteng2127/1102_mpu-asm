@@ -3,27 +3,26 @@
   JMP  MAIN
   ORG  000BH
 ; Timer0 ISR
-  MOV A, R2
-  JNZ ISREND
+  DJNZ R2, ISREND
   MOV R2, AR7
 SHOW:
   CPL P1.1
 ISREND:
-  DEC R2
   RETI
 
   ORG  30H
 MAIN:
   MOV R1, #0
   MOV R7, #10 ; 10 interrupts=100ms
-  MOV R2, #0
+  MOV R2, #1
   ; Timer Mode
   MOV TMOD,  #02H ; Timer 0, mode 2
-  MOV TH0, #246 ; 256 - 100
-  MOV TL0, #246 ; 256 - 100
+  MOV TH0, #246 ; 256 - 10
+  MOV TL0, #246 ; 256 - 10
   SETB TR0
   SETB TF0
   MOV IE, #10000010B ; enable timer 0
+  ; scan row 2
   CLR P0.2
 LOOP:
   CALL COLSCAN
@@ -71,6 +70,7 @@ PRESS6:
 DECHITBOUND:
   JMP GOTKEY
 
+; got a key pressed
 GOTKEY:
   SETB F0
   RET
