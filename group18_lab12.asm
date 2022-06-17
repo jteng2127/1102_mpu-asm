@@ -42,8 +42,8 @@ STOP_GO:
 MAIN:
 		MOV	SP, #40H	;Init SP
 		MOV	TMOD, #02H 	;timer0, mode 2 
-		MOV	TH0, #-30 	;10 us delay 
-		MOV	TL0, #-30 	;10 us delay
+		MOV	TH0, #-30 	;30 us delay 
+		MOV	TL0, #-30 	;30 us delay
 
 		MOV	R7, #10	;R7 = Initial Value of Counter
 		MOV	R6, 07H	;R6 = Counter
